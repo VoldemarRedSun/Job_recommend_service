@@ -1,10 +1,11 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+import pandas as pd
 from main import main
 
 
 
-model = None
+
 app = FastAPI()
 
 
@@ -18,8 +19,9 @@ app = FastAPI()
 #     topicModelType = 'NMF'
 
 class VacancyResponse(BaseModel):
-    resume: str
-    topicModelType: str
+    professions: str
+    skills: str
+    vacancies: dict
 
 
 # create a route
@@ -97,8 +99,9 @@ def test_start(resume: str, topicModelType: str):
                  modelType=topicModelType,
                  oneHotSkillsPath=oneHotSkill)
     response = VacancyResponse(
-        resume=resume,
-        topicModelType=topicModelType,
+        professions = prediction['professions'],
+        skills = prediction['skills'],
+        vacancies = prediction['vacancies_df'].to_dict()['Name']
     )
 
     return response
