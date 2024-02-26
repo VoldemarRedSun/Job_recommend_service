@@ -1,3 +1,5 @@
+mkdir models
+cd models
 #downloading CatBoost model
 gdown 1fj_ssNcOQn32OrY5XSLeunes-xmxpqUQ
 #downloading LDA model

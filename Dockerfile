@@ -2,6 +2,7 @@ FROM python:3.10
 
 WORKDIR /app
 
+
 COPY . .
 
 RUN pwd
@@ -9,6 +10,9 @@ RUN pwd
 RUN ls -l
 
 RUN ./scripts/data_download.sh
+
+RUN ./scripts/models_download.sh
+
 
 RUN ls -l
 
