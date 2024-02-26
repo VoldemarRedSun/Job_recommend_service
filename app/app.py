@@ -5,18 +5,17 @@ from main import main
 
 
 
+tags_metadata = [
+    {
+        "name": "predict",
+        "description": "predicts the most suitable profession, required skills and vacancies with hh.ru "
+    },
 
-app = FastAPI()
+]
+
+app = FastAPI(openapi_tags=tags_metadata)
 
 
-# dataPath: str = './data/db10500.csv'
-#     pathLemmasTexts: str = './data/prepdf10500.csv'
-#     oneHotSkill: str = './data/OHS10500.csv'
-#     NVacRecs: int = 5
-#     NskillsRecs: int = 5
-#     regrModelName = './models/CatBoostModel10500.cbm'
-#     resume = 'design, photoshop, figma, ux, ui, 3d'
-#     topicModelType = 'NMF'
 
 class VacancyResponse(BaseModel):
     professions: str
@@ -24,35 +23,9 @@ class VacancyResponse(BaseModel):
     vacancies: dict
 
 
-# create a route
-@app.get("/")
-def index():
-    return {"resume": 'design, photoshop, figma, ux, ui, 3d',
-            "topicModelType": 'NMF'}
 
 
-# Register the function to run during startup
-# @app.on_event("startup")
-# def startup_event():
-#     global model
-#     model = load_model()
-
-
-# Your FastAPI route handlers go here
-@app.get("/predict")
-def predict_sentiment(resume: str, topicModelType: str):
-
-
-
-    response =  VacancyResponse(
-        resume = resume,
-        topicModelType = topicModelType,
-    )
-
-    return response
-
-
-@app.get("/test_start")
+@app.get("/predict", tags = ['predict'] )
 def test_start(resume: str, topicModelType: str):
     dataPath: str = './data/db10500.csv'
     pathLemmasTexts: str = './data/prepdf10500.csv'
@@ -60,7 +33,7 @@ def test_start(resume: str, topicModelType: str):
     NVacRecs: int = 5
     NskillsRecs: int = 5
     regrModelName = './models/CatBoostModel10500.cbm'
-    resume = 'design, photoshop, figma, ux, ui, 3d'
+
 
 
     regrConfig = {'text_features': ['Description'],

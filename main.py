@@ -12,7 +12,7 @@ def main(mConfig: dict,
          Nrecs: int = 10,
          NrecSkills: int = 10,
          modelType: str = 'LDA',
-         oneHotSkillsPath: str = './data/oneHotSkills9000.csv'):
+         oneHotSkillsPath: str = './data/oneHotSkills9000.csv') -> dict:
 
     dataPrep = DataPreparation(dataPath)
     dataPrep.run(baseTokenIsSkills=True,
@@ -30,11 +30,13 @@ def main(mConfig: dict,
                       regrModelPath=regrNameModel)
 
     cluster_num, prep_resume = mr.run_process(resume=resume)
-    mr.run_recomends(clust=cluster_num,
+    prediction = mr.run_recomends(clust=cluster_num,
                      prepResume=prep_resume,
                      nRecVacs=Nrecs,
                      nRecSkills=NrecSkills,
                      pathOrigData=dataPath)
+
+    return prediction
 
 
 if __name__ == '__main__':
