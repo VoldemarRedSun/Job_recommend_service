@@ -25,8 +25,8 @@ class VacancyResponse(BaseModel):
 
 
 
-@app.get("/predict", tags = ['predict'] )
-def test_start(resume: str, topicModelType: str):
+@app.get("/predict", tags = ["predict"] )
+def predict(resume: str, topicModelType: str):
     dataPath: str = './data/db10500.csv'
     pathLemmasTexts: str = './data/prepdf10500.csv'
     oneHotSkill: str = './data/OHS10500.csv'
