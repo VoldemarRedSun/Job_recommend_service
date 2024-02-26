@@ -1,0 +1,104 @@
+from fastapi import FastAPI
+from pydantic import BaseModel
+from main import main
+
+
+
+model = None
+app = FastAPI()
+
+
+# dataPath: str = './data/db10500.csv'
+#     pathLemmasTexts: str = './data/prepdf10500.csv'
+#     oneHotSkill: str = './data/OHS10500.csv'
+#     NVacRecs: int = 5
+#     NskillsRecs: int = 5
+#     regrModelName = './models/CatBoostModel10500.cbm'
+#     resume = 'design, photoshop, figma, ux, ui, 3d'
+#     topicModelType = 'NMF'
+
+class VacancyResponse(BaseModel):
+    resume: str
+    topicModelType: str
+
+
+# create a route
+@app.get("/")
+def index():
+    return {"resume": 'design, photoshop, figma, ux, ui, 3d',
+            "topicModelType": 'NMF'}
+
+
+# Register the function to run during startup
+# @app.on_event("startup")
+# def startup_event():
+#     global model
+#     model = load_model()
+
+
+# Your FastAPI route handlers go here
+@app.get("/predict")
+def predict_sentiment(resume: str, topicModelType: str):
+
+
+
+    response =  VacancyResponse(
+        resume = resume,
+        topicModelType = topicModelType,
+    )
+
+    return response
+
+
+@app.get("/test_start")
+def test_start(resume: str, topicModelType: str):
+    dataPath: str = './data/db10500.csv'
+    pathLemmasTexts: str = './data/prepdf10500.csv'
+    oneHotSkill: str = './data/OHS10500.csv'
+    NVacRecs: int = 5
+    NskillsRecs: int = 5
+    regrModelName = './models/CatBoostModel10500.cbm'
+    resume = 'design, photoshop, figma, ux, ui, 3d'
+
+
+    regrConfig = {'text_features': ['Description'],
+                  'cat_features': ['Experience', 'Schedule'],
+                  'loss_function': "RMSE",
+                  'learning_rate': 0.25,
+                  'iterations': 300,
+                  'depth': 7,
+                  'verbose': False,
+                  'random_state': 0,
+                  'task_type': "GPU"}
+
+    if topicModelType == 'LDA':
+        modelConfig = {"num_topics": 70,
+                       "random_state": 0,
+                       "update_every": 1,
+                       "chunksize": 100,
+                       'minimum_probability': 0.005}
+        modelName = './models/LdaModel10500.pkl'
+
+    elif topicModelType == 'NMF':
+        modelConfig = {'n_components': 120,
+                       'random_state': 0,
+                       'solver': 'mu',
+                       'beta_loss': 'kullback-leibler'}
+        modelName = './models/NMFmodel10500.pkl'
+
+    prediction = main(regrConfig=regrConfig,
+                 dataPath=dataPath,
+                 pathLemmasTexts=pathLemmasTexts,
+                 Nrecs=NVacRecs,
+                 NrecSkills=NskillsRecs,
+                 mConfig=modelConfig,
+                 nameClustModel=modelName,
+                 resume=resume,
+                 modelType=topicModelType,
+                 oneHotSkillsPath=oneHotSkill)
+    response = VacancyResponse(
+        resume=resume,
+        topicModelType=topicModelType,
+    )
+
+    return response
