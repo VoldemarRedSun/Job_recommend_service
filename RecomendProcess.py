@@ -60,7 +60,7 @@ class ModelsRunner:
         self.modelWrap = modelWrap
         return clust, prepResume
 
-    def recomend_prof(self, listProffesions: list[str], stopwordsProfs: list[str]) -> None:
+    def recomend_prof(self, listProffesions: list[str], stopwordsProfs: list[str]) -> None | dict | str :
         normProfName = []
         for prof in listProffesions:
             normProfName.append(' '.join(set(lemmatize(prof, self.descRP,
@@ -70,11 +70,12 @@ class ModelsRunner:
         for x in Counter(normProfName).most_common():
             if len(x[0].split()) > 1:
                 print("\n- Рекомендуемая профессия: " + x[0])
+                return "\n- Рекомендуемая профессия: " + x[0]
                 break
 
     def recomend_skills(self, clust: int,
                         prepResume: list[str],
-                        nRecSkills: int) -> None:
+                        nRecSkills: int) -> None | str:
         top_terms = []
         if self.modelType == "LDA":
             top_terms = self.modelWrap.model.print_topic(clust, topn=len(prepResume) + int(nRecSkills * 1.5))
@@ -99,18 +100,21 @@ class ModelsRunner:
                 b = self.oneHotSkills.loc[:, clustSkill].values
                 simCosine[i, j] = a.dot(b) / (np.linalg.norm(a) * np.linalg.norm(b))
 
-        print("\n- Рекомедую изучить следующие навыки(частота встречаемости с вашими навыками)")
+        recommend_skills = "\n- Рекомедуем Вам изучить следующие навыки(частота встречаемости с вашими навыками)"
+        print("\n- Рекомедуем Вам изучить следующие навыки(частота встречаемости с вашими навыками)")
         topInds = np.argpartition(simCosine.mean(axis=0), kth=-nRecSkills)[-nRecSkills:]
         for i, x in enumerate(topInds):
+            recommend_skills += f'{i+1}) ' + outerSkills[x] + '\n'
             print(f'%-20s| %1.5f' % (f'{i+1}) ' + outerSkills[x], simCosine.mean(axis=0)[x]), end='\n')
         print('\n')
+        return recommend_skills
 
     def recomend_vacancies(self,
                            clust: int,
                            prepResume: list[str],
                            nRecVacs: int,
                            pathOrigData: str,
-                           pathSaveResultVacs: str) -> None:
+                           pathSaveResultVacs: str) -> None | pd.DataFrame:
         print('Подбор подходящих вакансий...', end=' ')
         resumeTokenVect = np.array([1 if token in prepResume else 0 for token in self.vocab], dtype=np.uint)
         currentClustVacs = self.oneHotSkills[(self.modelWrap.resDF['TopicLabel'] == clust).values]
@@ -149,24 +153,28 @@ class ModelsRunner:
                       nRecVacs: int = 5,
                       nRecSkills: int = 5,
                       pathOrigData:str = './data/database.csv',
-                      pathSaveRecsVacs: str = './results/Recomendations.csv') -> None:
+                      pathSaveRecsVacs: str = './results/Recomendations.csv') -> None | dict:
 
         nameProfs = self.modelWrap.resDF[self.modelWrap.resDF['TopicLabel'] == clust]['Name'].values
 
-        self.recomend_prof(listProffesions=nameProfs, stopwordsProfs=['junior', 'senior', 'middle',
+        recommend_prof = self.recomend_prof(listProffesions=nameProfs, stopwordsProfs=['junior', 'senior', 'middle',
                                                                       'старший', 'младший'])
 
-        self.recomend_skills(clust=clust,
+        recommend_skills = self.recomend_skills(clust=clust,
                              prepResume=prepResume,
                              nRecSkills=nRecSkills)
 
-        self.recomend_vacancies(clust=clust,
+        recommend_vacs = self.recomend_vacancies(clust=clust,
                                 prepResume=prepResume,
                                 nRecVacs=nRecVacs,
                                 pathOrigData=pathOrigData,
                                 pathSaveResultVacs=pathSaveRecsVacs)
 
         self.recomend_salary(prepResume=prepResume)
+
+        return {'professions': recommend_prof,
+                'skills': recommend_skills,
+                'vacancies_df': recommend_vacs }
 
 
 
