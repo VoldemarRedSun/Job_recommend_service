@@ -70,7 +70,7 @@ class ModelsRunner:
         for x in Counter(normProfName).most_common():
             if len(x[0].split()) > 1:
                 print("\n- Рекомендуемая профессия: " + x[0])
-                return "\n- Рекомендуемая профессия: " + x[0]
+                return "Рекомендуемая профессия: " + x[0]
                 break
 
     def recomend_skills(self, clust: int,
@@ -100,14 +100,14 @@ class ModelsRunner:
                 b = self.oneHotSkills.loc[:, clustSkill].values
                 simCosine[i, j] = a.dot(b) / (np.linalg.norm(a) * np.linalg.norm(b))
 
-        recommend_skills = "\n- Рекомедуем Вам изучить следующие навыки(частота встречаемости с вашими навыками)"
+        recommend_skills = " Рекомедуем Вам изучить следующие навыки, в котексте следущих компаний: "
         print("\n- Рекомедуем Вам изучить следующие навыки(частота встречаемости с вашими навыками)")
         topInds = np.argpartition(simCosine.mean(axis=0), kth=-nRecSkills)[-nRecSkills:]
         for i, x in enumerate(topInds):
-            recommend_skills += f'{i+1}) ' + outerSkills[x] + '\n'
+            recommend_skills += f'{i+1}) ' + outerSkills[x] + '  '
             print(f'%-20s| %1.5f' % (f'{i+1}) ' + outerSkills[x], simCosine.mean(axis=0)[x]), end='\n')
         print('\n')
-        return recommend_skills
+        return recommend_skills.rstrip(" ")
 
     def recomend_vacancies(self,
                            clust: int,
@@ -133,6 +133,7 @@ class ModelsRunner:
         recDf['resume similarity'] = cosMetr[topCos]
         print('Вакансии подобраны.', end=' ')
         saveData(recDf, pathSaveResultVacs)
+        return recDf
 
     def recomend_salary(self, prepResume: list[str]):
         print('Оценка средней зароботной платы...', end=' ')
@@ -174,7 +175,7 @@ class ModelsRunner:
 
         return {'professions': recommend_prof,
                 'skills': recommend_skills,
-                'vacancies_df': recommend_vacs }
+                'vacancies_df': recommend_vacs}
 
 
 
