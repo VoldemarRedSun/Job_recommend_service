@@ -132,7 +132,7 @@ class NMFmodel(TopicModel):
 
     def predict(self):
         # model = loadData(modelPath)
-        self.resDF['TopicLabel'] = self.model.transform(self.encodeCorpus).argmax(axis=1).astype(np.int)
+        self.resDF['TopicLabel'] = self.model.transform(self.encodeCorpus).argmax(axis=1).astype(int)
 
     def inference(self, resume):
         important_words = lemmatize(resume, delSymbPattern=self.descRP, tokens=self.vocab)
