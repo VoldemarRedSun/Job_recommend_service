@@ -142,10 +142,19 @@ class NMFmodel(TopicModel):
         preps = important_words.split()
         return self.model.transform(self.vectorizer.transform(preps)).sum(axis=0).argmax(), preps
 
-    def model_eval(self, topicTermData):
+    def model_eval(self, topicTermData, visualization = False):
         descrTopics = {}
         feature_names = self.vectorizer.get_feature_names_out()
+        if visualization:
+            self._make_graphics()
+        for topic_idx, topic_words in enumerate(self.model.components_):
+            top_words_idx = topic_words.argsort()[::-1]
+            top_words = [feature_names[i] for i in top_words_idx]
+            descrTopics[topic_idx + 1] = ' '.join(top_words)
 
+        saveData(pd.Series(descrTopics), topicTermData)
+
+    def _make_graphics(self):
         fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(18, 6))
         sns.heatmap(cosine_similarity(self.model.components_), ax=ax[0])
         ax[0].set_title('Косинусная близость выделенных тематик')
@@ -157,15 +166,6 @@ class NMFmodel(TopicModel):
         ax[1].set_yticks([])
         plt.tight_layout()
         plt.show()
-
-        for topic_idx, topic_words in enumerate(self.model.components_):
-            top_words_idx = topic_words.argsort()[::-1]
-            top_words = [feature_names[i] for i in top_words_idx]
-            descrTopics[topic_idx + 1] = ' '.join(top_words)
-
-        saveData(pd.Series(descrTopics), topicTermData)
-
-
 class CatBoostModel:
     def __init__(self, config):
         self.config = config
@@ -187,7 +187,7 @@ class CatBoostModel:
             # print relative RMSE
             print(f"Best model relative RMSEloss: {self.model.best_score_['learn']['RMSE'] / (y.max() - y.min())}")
 
-    def inference(self, resume):
+    def inference(self, resume: str):
         del self.infer_table['size']
         self.infer_table['Description'] = [resume]*self.infer_table.shape[0]
         self.infer_table['Salary'] = self.model.predict(self.infer_table)
