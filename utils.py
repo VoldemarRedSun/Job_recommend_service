@@ -14,7 +14,10 @@ REPLACE_TOKENS = {'k8s': 'kubernetes',
                   '1c': '1с',
                   '++': '` `',
                   '+': ' ',
-                  '` `': '++'}
+                  '` `': '++',
+                  'питон': 'python',
+                  'пайтон': 'python',
+                  'tf': 'tensorflow'}
 
 def token_replace(string):
     rep = dict((re.escape(k), v) for k, v in REPLACE_TOKENS.items())
@@ -112,3 +115,5 @@ def loadData(filename: str):
         assert False, 'Specified wrong file extension!'
     print(f"Данные загружены c ({filename})")
     return data
+
+
