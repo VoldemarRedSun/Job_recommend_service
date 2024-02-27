@@ -1,6 +1,6 @@
 .idea
 venv
-results
+results/*
 data
 models
 

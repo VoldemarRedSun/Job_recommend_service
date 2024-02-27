@@ -5,16 +5,11 @@ WORKDIR /app
 
 COPY . .
 
-RUN pwd
 
-RUN ls -l
+RUN ./scripts/data_download.sh  && ./scripts/models_download.sh
 
-RUN ./scripts/data_download.sh
-
-RUN ./scripts/models_download.sh
+RUN pip install -r requirements.txt
 
 
-RUN ls -l
-
-
-CMD [ "python", "./my_test.py" ]
+ # Run the application
+CMD ["uvicorn", "app.app:app", "--host", "0.0.0.0", "--port", "80"]
