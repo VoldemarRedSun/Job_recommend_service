@@ -1,4 +1,9 @@
+# ML job recommendation service on Fastapi
+
 This service recommends according to your competencies the most suitable profession for you, the skills that are relevant to it and a list of suitable vacancies (the database of vacancies was collected by parsing with hh.ru )
+
+## Local development
+
 ```bash
 # Create a virtual environment
 python -m venv venv
@@ -20,3 +25,13 @@ uvicorn app.app:app --host 0.0.0.0 --port 8080
 http://0.0.0.0:8080/docs
 or 
 http://localhost:8080/docs
+```
+
+## Run app in docker container
+
+```bash
+docker build -t ml-app .
+docker run -p 80:80 ml-app
+```
+
+## Run tests for the app 
