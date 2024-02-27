@@ -1,7 +1,11 @@
 # ML job recommendation service on FastApi
 
-This service recommends according to your competencies the most suitable profession for you, the skills that are relevant to it and a list of suitable vacancies (the database of vacancies was collected by parsing with hh.ru )
+This service recommends according to your competencies the most suitable profession for you, the skills that are relevant to it and a list of suitable vacancies (the database of vacancies was collected by parsing with hh.ru).
+To solve the problem of the recommendation, the following thematic modeling models were used:
+ - __Latent Dirichlet Allocation (LDA)__ 
+ - __Non-negative matrix factorization (NMF)__
 
+The problem of salary prediction was also solved using the __CatBoostRegressor__ model.
 ## Local development
 
 ```bash
@@ -33,3 +37,4 @@ http://localhost:8080/docs
 docker build -t ml-app .
 docker run -p 80:80 ml-app
 ```
+
