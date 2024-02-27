@@ -1,4 +1,4 @@
-# ML job recommendation service on Fastapi
+# ML job recommendation service on FastApi
 
 This service recommends according to your competencies the most suitable profession for you, the skills that are relevant to it and a list of suitable vacancies (the database of vacancies was collected by parsing with hh.ru )
 
