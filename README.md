@@ -33,5 +33,3 @@ http://localhost:8080/docs
 docker build -t ml-app .
 docker run -p 80:80 ml-app
 ```
-
-## Run tests for the app 
