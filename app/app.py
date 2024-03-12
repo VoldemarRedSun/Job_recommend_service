@@ -47,7 +47,7 @@ def predict(resume: str, topicModelType: str):
                   'task_type': "GPU"}
 
 
-    topicModelType = NMF
+    topicModelType = 'NMF'
     modelConfig = {'n_components': 120,
                        'random_state': 0,
                        'solver': 'mu',
