@@ -47,12 +47,12 @@ def predict(resume: str, topicModelType: str):
                   'task_type': "GPU"}
 
 
-    if topicModelType == 'NMF' or topicModelType not in ['NMF', 'LDA']:
-        modelConfig = {'n_components': 120,
+    topicModelType = NMF
+    modelConfig = {'n_components': 120,
                        'random_state': 0,
                        'solver': 'mu',
                        'beta_loss': 'kullback-leibler'}
-        modelName = './models/NMFmodel10500.pkl'
+    modelName = './models/NMFmodel10500.pkl'
 
 
     prediction = main(regrConfig=regrConfig,
