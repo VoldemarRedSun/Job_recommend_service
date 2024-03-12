@@ -54,12 +54,13 @@ def predict(resume: str, topicModelType: str):
                        'minimum_probability': 0.005}
         modelName = './models/LdaModel10500.pkl'
 
-    elif topicModelType == 'NMF':
+    elif topicModelType == 'NMF' or topicModelType not in ['NMF', 'LDA']:
         modelConfig = {'n_components': 120,
                        'random_state': 0,
                        'solver': 'mu',
                        'beta_loss': 'kullback-leibler'}
         modelName = './models/NMFmodel10500.pkl'
+
 
     prediction = main(regrConfig=regrConfig,
                  dataPath=dataPath,
