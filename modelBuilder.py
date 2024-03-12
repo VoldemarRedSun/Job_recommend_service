@@ -73,7 +73,7 @@ class LDAmodel(TopicModel):
 
     def predict(self):
         resTopics = self.model.get_document_topics(self.encodeCorpus)
-        self.resDF['TopicLabel'] = np.array([i[0][0] if len(i) > 0 else -1 for i in resTopics], dtype=np.int)
+        self.resDF['TopicLabel'] = np.array([i[0][0] if len(i) > 0 else -1 for i in resTopics], dtype= int)
         self.resDF['TopicProb'] = [i[0][1] if len(i) > 0 else None for i in resTopics]
 
     def inference(self, resume):
