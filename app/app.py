@@ -46,15 +46,8 @@ def predict(resume: str, topicModelType: str):
                   'random_state': 0,
                   'task_type': "GPU"}
 
-    if topicModelType == 'LDA':
-        modelConfig = {"num_topics": 70,
-                       "random_state": 0,
-                       "update_every": 1,
-                       "chunksize": 100,
-                       'minimum_probability': 0.005}
-        modelName = './models/LdaModel10500.pkl'
 
-    elif topicModelType == 'NMF' or topicModelType not in ['NMF', 'LDA']:
+    if topicModelType == 'NMF' or topicModelType not in ['NMF', 'LDA']:
         modelConfig = {'n_components': 120,
                        'random_state': 0,
                        'solver': 'mu',
