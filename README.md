@@ -36,5 +36,7 @@ http://localhost:8080/docs
 ```bash
 docker build -t ml-app .
 docker run -p 80:80 ml-app
+# Use swagge APi to access the app
+http://localhost:80/docs
 ```
 
