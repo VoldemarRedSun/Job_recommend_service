@@ -87,7 +87,7 @@ class LDAmodel(TopicModel):
 
         topic_vec = []
         topic_vec = self.model[ques_vec]
-        word_count_array = np.empty((len(topic_vec), 2), dtype=np.object)
+        word_count_array = np.empty((len(topic_vec), 2), dtype= object)
         for i in range(len(topic_vec)):
             word_count_array[i, 0] = topic_vec[i][0]
             word_count_array[i, 1] = topic_vec[i][1]
